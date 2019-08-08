@@ -9,7 +9,7 @@ if [ "$1" == "" ]; then
     if [ "$dirname" == ".." ]; then
         dirname='.'
     fi
-    dirname="$dirname/lib"
+    dirname="$dirname/libs"
 	ls -1 "$dirname/"lib_*.sh | while read file; do
 		FILENAME=$(basename -- "$file")
 		BASENAME="${FILENAME%.*}"
