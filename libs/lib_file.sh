@@ -64,3 +64,44 @@ function lib_file_getDirname() {
         local dirname=$(dirname -- "$1")
         echo "$dirname"
 }
+
+#* function lib_file_setOwner
+#* Sets user and optional group of a file system object
+#* @arg1 String File system object
+#* @arg2 String Username
+#* @arg3 String (Optional) Groupname
+#* @return Integer Exit Code
+#* @throws Throws an error if no file system object is given
+#* @throws Throws an error if file system object dioes not exist
+#* @throws Throws an error if no user is given
+#* @throws Throws an error if group is given but dows not exists
+function lib_file_setOwner() {
+	if [ "$1" == "" ]; then
+		echo "No file system object is given"
+		exit 1
+	fi
+	if [ ! -e "$1" ]; then
+		echo "File system object does not exist: $1"
+		exit 1
+	fi
+	if [ "$2" == "" ]; then
+		echo "No user given"
+		exit 1
+	fi
+	if [ $(id -u "$2") -eq 1 ]; then
+		echo "User $2 does not exist"
+		exit 1
+	fi
+	if [ "$3" != "" ]; then
+		if [ ! $(getent group "$1") ]; then
+			echo "Group $3 does not exist"
+			exit 1
+		fi
+	fi
+	if [ "$3" == "" ]; then
+		chown "$2" "$1"
+	else
+		chown "$2:$3" "$1"
+	fi
+	echo $?
+}
