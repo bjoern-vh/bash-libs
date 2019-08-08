@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIBRARY_PATH="$0/lib"
+LIBRARY_PATH="$0/libs"
 
 if [ "$1" == "" ]; then
 	echo "No library file submitted."
