@@ -2,31 +2,29 @@
 
 LIBRARY_PATH="$0/libs"
 
-if [ "$1" == "" ]; then
-	echo "No library file submitted."
+PREFIX='lib_'
+
+METHOD="$1"
+
+LIBRARY_NAME=$(echo "$1" | cut -d'_' -f1)
+LIBRARY_FUNCTION=$(echo "$1" | cut -d' ' -f2)
+LIBRARY_FILE="$LIBRARY_PATH/$PREFIX$LIBRARY_NAME.sh"
+
+if [ ! -e "$LIBRARY_FILE" ]; then
+	echo "Library file '$LIBRARY_FILE' is not available."
 	exit 1
 fi
 
-LIBRARY="$1"
+FUNCTION="$PREFIX$LIBRARY_NAME_$LIBRARY_FUNCTION"
 
-if [ "${LIBRARY:0:4}" != "lib_" ]; then
-        LIBRARY="lib_$LIBRARY"
+# Check if already loaded
+declare -f "$FUNCTION" > /dev/null
+
+if [ $? -ne 0 ]; then
+	. "$LIBRARY_FILE"
 fi
 
-if [ "${LIBRARY: -3}" != ".sh" ]; then
-        LIBRARY="$LIBRARY.sh"
-fi
-
-if [ ! -f "$LIBRARY_PATH/$LIBRARY" ]; then
-	echo "Library is not available."
-	exit 1
-fi
-
-if [ ! -r "$LIBRARY_PATH/$LIBRARY" ]; then
-	echo "Library is not readable."
-	exit 1
-fi
-
-. "LIBRARY_PATH/$LIBRARY"
+# Call function - TODO: Arguments
+${PREFIX}
 
 exit 0
