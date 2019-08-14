@@ -1,5 +1,25 @@
 #!/bin/bash
 
+function lib_string_tolower() {
+    echo "${1,,}"
+}
+
+function lib_string_toupper() {
+    echo "${1^^}"
+}
+
+function lib_string_trim() {
+    local replace=' ' 
+    if [ -z "$1" ]; then
+        replace="${1:0:1}"
+    fi    
+    echo "${1%%$replace}"
+}
+
+function lib_string_substr() {
+    echo "${1:$2:$3}"
+}
+
 #* function lib_string_repeat
 #* Repeats a character a given times
 #* @arg1 String Character to repeat
