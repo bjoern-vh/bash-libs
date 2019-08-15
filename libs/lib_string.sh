@@ -9,10 +9,10 @@ function lib_string_toupper() {
 }
 
 function lib_string_trim() {
-    local replace=' ' 
+    local replace=' '
     if [ -z "$1" ]; then
         replace="${1:0:1}"
-    fi    
+    fi
     echo "${1%%$replace}"
 }
 

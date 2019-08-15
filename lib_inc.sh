@@ -1,30 +1,35 @@
 #!/bin/bash
 
-LIBRARY_PATH="$0/libs"
+function lib() {
 
-PREFIX='lib_'
+	REAL_DIR=$(dirname -- "$BASH_SOURCE")
 
-METHOD="$1"
+	LIBRARY_PATH="$REAL_DIR/libs"
+	PREFIX='lib_'
 
-LIBRARY_NAME=$(echo "$1" | cut -d'_' -f1)
-LIBRARY_FUNCTION=$(echo "$1" | cut -d' ' -f2)
-LIBRARY_FILE="$LIBRARY_PATH/$PREFIX$LIBRARY_NAME.sh"
+	METHOD="$1"
 
-if [ ! -e "$LIBRARY_FILE" ]; then
-	echo "Library file '$LIBRARY_FILE' is not available."
-	exit 1
-fi
+	LIBRARY_NAME=$(echo "$1" | cut -d'_' -f1)
+	LIBRARY_FUNCTION=$(echo "$1" | cut -d' ' -f2)
+	LIBRARY_FILE="$LIBRARY_PATH/$PREFIX$LIBRARY_NAME.sh"
 
-FUNCTION="$PREFIX$LIBRARY_NAME_$LIBRARY_FUNCTION"
+	if [ ! -e "$LIBRARY_FILE" ]; then
+		echo "Library file '$LIBRARY_FILE' is not available."
+		exit 1
+	fi
 
-# Check if already loaded
-declare -f "$FUNCTION" > /dev/null
+	FUNCTION="$PREFIX$LIBRARY_NAME_$LIBRARY_FUNCTION"
 
-if [ $? -ne 0 ]; then
-	. "$LIBRARY_FILE"
-fi
+	# Check if already loaded
+	declare -f "$FUNCTION" > /dev/null
 
-# Call function - TODO: Arguments
-${PREFIX}
+	if [ $? -ne 0 ]; then
+		. "$LIBRARY_FILE"
+	fi
 
-exit 0
+	shift
+
+	# Call function - TODO: Arguments
+	${FUNCTION} "$@"
+	#echo "$result"
+}
